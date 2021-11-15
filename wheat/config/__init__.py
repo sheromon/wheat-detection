@@ -14,9 +14,12 @@ def load_config(config_path, configspec_path=None, do_validation=True):
 
     :return: ConfigObj object, basically a dictionary of parameters
     """
+    config_path = Path(config_path)
+    if not config_path.is_file():
+        raise FileNotFoundError(f"No file '{config_path}'.")
     # Assumes that the configspec.ini for the given config file is in the same directory
     if not configspec_path:
-        configspec_path = Path(config_path).parent/'configspec.ini'
+        configspec_path = config_path.parent/'configspec.ini'
 
     spec = configobj.ConfigObj(str(configspec_path), list_values=False)
     config = configobj.ConfigObj(str(config_path), configspec=spec)
