@@ -42,6 +42,9 @@ class WheatDataModule(LightningDataModule):
         train_samples = int(train_fraction * len(unique_image_ids))
         train_ids = unique_image_ids[:train_samples]
         val_ids = unique_image_ids[train_samples:]
+        # if we want to run overfitting, use the val set as the train set
+        if self.config['train']['overfit']:
+            train_ids = val_ids
 
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -53,6 +56,8 @@ class WheatDataModule(LightningDataModule):
         return DataLoader(
             self.train_dataset,
             batch_size=self.config['train']['batch_size'],
+            shuffle=True,
+            num_workers=4,
             collate_fn=collate_fn,
         )
 
@@ -60,6 +65,7 @@ class WheatDataModule(LightningDataModule):
         return DataLoader(
             self.val_dataset,
             batch_size=self.config['eval']['batch_size'],
+            num_workers=4,
             collate_fn=collate_fn,
         )
 
