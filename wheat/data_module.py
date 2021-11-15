@@ -46,26 +46,27 @@ class WheatDataModule(LightningDataModule):
         transform = transforms.Compose([
             transforms.ToTensor(),
         ])
-        target_transform = transforms.Compose([
-            transforms.ToTensor(),
-        ])
-        self.train_dataset = WheatDataset(
-            image_dir, train_ids, anno_dict, 
-            transform=transform, target_transform=target_transform,
-        )
-        self.val_dataset = WheatDataset(
-            image_dir, val_ids, anno_dict, 
-            transform=transform, target_transform=target_transform,
-        )
-#     image_id  width  height                         bbox   source
-# 0  b6ab77fd7   1024    1024   [834.0, 222.0, 56.0, 36.0]  usask_1
+        self.train_dataset = WheatDataset(image_dir, train_ids, anno_dict, transform=transform)
+        self.val_dataset = WheatDataset(image_dir, val_ids, anno_dict, transform=transform)
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.config['train']['batch_size'])
+        return DataLoader(
+            self.train_dataset,
+            batch_size=self.config['train']['batch_size'],
+            collate_fn=collate_fn,
+        )
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.config['eval']['batch_size'])
+        return DataLoader(
+            self.val_dataset,
+            batch_size=self.config['eval']['batch_size'],
+            collate_fn=collate_fn,
+        )
 
     # def test_dataloader(self):
     #     transforms = ...
     #     return DataLoader(self.test, batch_size=64)
+
+def collate_fn(batch):
+    """From https://github.com/pytorch/vision/blob/main/references/detection/utils.py"""
+    return tuple(zip(*batch))

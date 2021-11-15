@@ -9,7 +9,7 @@ from wheat.model import WheatModel
 
 def train(config):
     wheat_data_module = WheatDataModule(config)
-    model = WheatModel()
+    model = WheatModel(config)
     trainer = pl.Trainer()
     trainer.fit(model, wheat_data_module)
 
