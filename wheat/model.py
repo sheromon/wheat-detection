@@ -1,3 +1,4 @@
+"""PyTorch Lightning Module with torchvision object detection model"""
 import brambox
 import numpy as np
 import pandas as pd
@@ -11,7 +12,10 @@ class WheatModel(pl.LightningModule):
 
     def __init__(self, config):
         super().__init__()
-        self._loss_names = ('loss_classifier', 'loss_box_reg', 'loss_objectness', 'loss_rpn_box_reg')
+        self._loss_names = (
+            'loss_classifier', 'loss_box_reg',
+            'loss_objectness', 'loss_rpn_box_reg',
+        )
         self.config = config
         # num_classes includes background, so wheat and background are two classes
         self.model = faster_rcnn.fasterrcnn_resnet50_fpn(num_classes=2)
@@ -30,7 +34,7 @@ class WheatModel(pl.LightningModule):
             lr=self.config['train']['optimizer']['initial_lr'],
         )
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch, batch_idx):  # pylint: disable=unused-argument
         """Run the model in training mode.
 
         :return: scalar tensor with total loss value
@@ -41,7 +45,7 @@ class WheatModel(pl.LightningModule):
         self.log_dict(loss_dict, on_step=True, batch_size=len(batch[1]))
         return total_loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch, batch_idx):  # pylint: disable=unused-argument
         """Run the model in eval mode.
 
         :return: tuple (labels, predictions) where labels and predictions are
@@ -70,7 +74,8 @@ class WheatModel(pl.LightningModule):
                     'x_top_left': anno['boxes'][:, 0].numpy().astype(np.float64),
                     'y_top_left': anno['boxes'][:, 1].numpy().astype(np.float64),
                     'width': (anno['boxes'][:, 2] - anno['boxes'][:, 0]).numpy().astype(np.float64),
-                    'height': (anno['boxes'][:, 3] - anno['boxes'][:, 1]).numpy().astype(np.float64),
+                    'height': (anno['boxes'][:, 3] - anno['boxes'][:, 1]).numpy() \
+                        .astype(np.float64),
                     'class_index': anno['labels'].numpy().astype(np.int64),
                 }
                 anno_df = pd.DataFrame(data=anno_data)
@@ -83,7 +88,8 @@ class WheatModel(pl.LightningModule):
                     'x_top_left': pred['boxes'][:, 0].numpy().astype(np.float64),
                     'y_top_left': pred['boxes'][:, 1].numpy().astype(np.float64),
                     'width': (pred['boxes'][:, 2] - pred['boxes'][:, 0]).numpy().astype(np.float64),
-                    'height': (pred['boxes'][:, 3] - pred['boxes'][:, 1]).numpy().astype(np.float64),
+                    'height': (pred['boxes'][:, 3] - pred['boxes'][:, 1]).numpy() \
+                        .astype(np.float64),
                     'class_index': pred['labels'].numpy().astype(np.int64),
                     'confidence': pred['scores'].numpy().astype(np.float64),
                 }

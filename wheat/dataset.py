@@ -1,3 +1,4 @@
+"""PyTorch Dataset class for loading wheat images and annotations"""
 from pathlib import Path
 
 from PIL import Image

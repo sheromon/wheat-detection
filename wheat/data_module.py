@@ -1,3 +1,4 @@
+"""PyTorch Lightning DataModule for working with the Kaggle wheat dataset"""
 import ast
 from pathlib import Path
 from typing import Optional
@@ -12,6 +13,7 @@ from wheat.dataset import WheatDataset
 
 
 class WheatDataModule(LightningDataModule):
+    """PyTorch Lightning DataModule for working with the Kaggle wheat dataset"""
     def __init__(self, config):
         super().__init__()
         self.config = config

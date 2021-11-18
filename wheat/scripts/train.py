@@ -1,3 +1,4 @@
+"""Training script"""
 import argparse
 
 import pytorch_lightning as pl
