@@ -4,11 +4,12 @@ import os
 from pathlib import Path
 from typing import Optional
 
+import albumentations as A
+import albumentations.pytorch
 import numpy as np
 import pandas as pd
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
-from torchvision import transforms
 
 from wheat.dataset import WheatDataset
 
@@ -34,7 +35,17 @@ class WheatDataModule(LightningDataModule):
         unique_image_ids = sorted([image_path.stem for image_path in image_dir.glob('*.jpg')])
         anno_dict = {image_id: [] for image_id in unique_image_ids}
 
-        transform = transforms.Compose([transforms.ToTensor()])
+        bbox_params = A.BboxParams(
+            format='pascal_voc', min_visibility=0.5, label_fields=['labels'])
+        train_transform = A.Compose([
+            A.HorizontalFlip(p=self.config['train']['transforms']['horizontal_flip_prob']),
+            A.RandomBrightnessContrast(
+                p=self.config['train']['transforms']['brightness_contrast_prob']),
+            albumentations.pytorch.ToTensorV2(),
+        ], bbox_params=bbox_params)
+        val_transform = A.Compose([
+            albumentations.pytorch.ToTensorV2(),
+        ], bbox_params=bbox_params)
 
         if stage in ['fit', 'validate']:
             train_csv = data_dir/'train.csv'
@@ -43,7 +54,7 @@ class WheatDataModule(LightningDataModule):
                 bbox = np.array(ast.literal_eval(row.bbox))
                 anno_dict[row.image_id].append(bbox)
 
-            rng = np.random.default_rng()
+            rng = np.random.default_rng(seed=self.config['numpy_seed'])
             rng.shuffle(unique_image_ids)
             train_fraction = 0.8
             train_samples = int(train_fraction * len(unique_image_ids))
@@ -55,13 +66,13 @@ class WheatDataModule(LightningDataModule):
 
             if stage == 'fit':
                 self.train_dataset = WheatDataset(
-                    image_dir, train_ids, anno_dict, transform=transform)
+                    image_dir, train_ids, anno_dict, transform=train_transform)
             self.val_dataset = WheatDataset(
-                image_dir, val_ids, anno_dict, transform=transform)
+                image_dir, val_ids, anno_dict, transform=val_transform)
 
         if stage == 'predict':
             self.test_dataset = WheatDataset(
-                image_dir, unique_image_ids, anno_dict, transform=transform)
+                image_dir, unique_image_ids, anno_dict, transform=val_transform)
 
     def train_dataloader(self):
         return DataLoader(
