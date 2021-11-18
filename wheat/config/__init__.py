@@ -1,3 +1,4 @@
+"""Config loading and validation"""
 from pathlib import Path
 
 import configobj
