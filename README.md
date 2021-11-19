@@ -19,6 +19,8 @@ Run training with the default config.ini file
 python wheat/scripts/train.py
 ```
 
+As documented in the [PyTorch Lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags), PyTorch Lightning CLI flags can be used to configure the training run. For example, to set the number of training epochs for to 10, add `--max_epochs=10` to the train command.
+
 ## Configuration
 
 Configuration is managed using [configobj](https://configobj.readthedocs.io/en/latest/configobj.html). The full set of configurable parameters with type information is available in [wheat/config/configspec.ini]([wheat/config/configspec.ini]). Overrides to default values can be specified in a custom `config.ini` file.
@@ -41,4 +43,6 @@ python wheat/scripts/train.py --config-path my_config.ini
 * Add data augmentation
 * Add learning rate schedule
 * Verify that GPU training works
+* Replace config with PyTorch Lightning hyperparameters
+* Add evaluation script
 * Get Python entrypoints working
