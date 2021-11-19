@@ -8,10 +8,10 @@ from wheat.data_module import WheatDataModule
 from wheat.model import WheatModel
 
 
-def train(config, args):
+def train(config, args_dict):
     wheat_data_module = WheatDataModule(config)
     model = WheatModel(config)
-    trainer = pl.Trainer.from_argparse_args(args)
+    trainer = pl.Trainer(**args_dict)
     trainer.fit(model, wheat_data_module)
 
 
@@ -23,8 +23,9 @@ def main():
     parser = pl.Trainer.add_argparse_args(parser)
     args = parser.parse_args()
 
-    config = load_config(args.config_path)
-    train(config, args)
+    args_dict = vars(args)
+    config = load_config(args_dict.pop('config_path'))
+    train(config, args_dict)
 
 
 if __name__ == '__main__':
