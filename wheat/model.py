@@ -62,11 +62,11 @@ class WheatModel(pl.LightningModule):
         # batch[0] is a list of input images, and we don't need those for eval
         return batch[1], predictions
 
-    def validation_epoch_end(self, val_step_outputs):
+    def validation_epoch_end(self, outputs):
         """Calculate average precision (AP) and log it."""
         anno_df_list = []
         det_df_list = []
-        for ibatch, val_outputs_batch in enumerate(val_step_outputs):
+        for ibatch, val_outputs_batch in enumerate(outputs):
             for isample, (anno, pred) in enumerate(zip(*val_outputs_batch)):
                 ind = ibatch * len(val_outputs_batch[0]) + isample
                 anno_data = {

@@ -23,8 +23,8 @@ class WheatDataset(Dataset):
         self.anno_dict = {key: val for key, val in anno_dict.items() if key in image_ids}
         self.transform = transform
 
-        if not all([image_id in self.anno_dict for image_id in self.image_ids]):
-            raise RuntimeError("Not all image IDs were found in anno_dict.")
+        if not all((image_id in self.anno_dict for image_id in self.image_ids)):
+            raise RuntimeError('Not all image IDs were found in anno_dict.')
 
     def __len__(self):
         return len(self.image_ids)

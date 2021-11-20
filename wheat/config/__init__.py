@@ -32,6 +32,6 @@ def load_config(config_path, configspec_path=None, do_validation=True):
     if do_validation and result is not True:
         for key, value in result.items():
             if value is not True:
-                raise RuntimeError('Config parameter "%s": %s' % (key, value))
+                raise RuntimeError(f'Config parameter "{key}": {value}')
 
     return config
