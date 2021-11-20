@@ -47,9 +47,9 @@ python wheat/scripts/train.py --config-path my_config.ini
 ```
 
 # TODO
+* Fix Python packaging (wheat module is not found)
 * Add data augmentation
 * Add learning rate schedule
-* Verify that GPU training works
 * Replace config with PyTorch Lightning hyperparameters
 * Add evaluation script
 * Get Python entrypoints working
