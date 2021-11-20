@@ -71,12 +71,13 @@ class WheatModel(pl.LightningModule):
                 ind = ibatch * len(val_outputs_batch[0]) + isample
                 anno_data = {
                     'image': ind * np.ones(len(anno['labels']), dtype=np.int64),
-                    'x_top_left': anno['boxes'][:, 0].numpy().astype(np.float64),
-                    'y_top_left': anno['boxes'][:, 1].numpy().astype(np.float64),
-                    'width': (anno['boxes'][:, 2] - anno['boxes'][:, 0]).numpy().astype(np.float64),
-                    'height': (anno['boxes'][:, 3] - anno['boxes'][:, 1]).numpy() \
-                        .astype(np.float64),
-                    'class_index': anno['labels'].numpy().astype(np.int64),
+                    'x_top_left': anno['boxes'][:, 0].cpu().numpy().astype(np.float64),
+                    'y_top_left': anno['boxes'][:, 1].cpu().numpy().astype(np.float64),
+                    'width': (anno['boxes'][:, 2] - anno['boxes'][:, 0]).cpu() \
+                        .numpy().astype(np.float64),
+                    'height': (anno['boxes'][:, 3] - anno['boxes'][:, 1]).cpu() \
+                        .numpy().astype(np.float64),
+                    'class_index': anno['labels'].cpu().numpy().astype(np.int64),
                 }
                 anno_df = pd.DataFrame(data=anno_data)
                 anno_df['class_label'] = anno_df['class_index']
@@ -85,13 +86,14 @@ class WheatModel(pl.LightningModule):
 
                 pred_data = {
                     'image': ind * np.ones(len(pred['labels']), dtype=np.int64),
-                    'x_top_left': pred['boxes'][:, 0].numpy().astype(np.float64),
-                    'y_top_left': pred['boxes'][:, 1].numpy().astype(np.float64),
-                    'width': (pred['boxes'][:, 2] - pred['boxes'][:, 0]).numpy().astype(np.float64),
-                    'height': (pred['boxes'][:, 3] - pred['boxes'][:, 1]).numpy() \
-                        .astype(np.float64),
-                    'class_index': pred['labels'].numpy().astype(np.int64),
-                    'confidence': pred['scores'].numpy().astype(np.float64),
+                    'x_top_left': pred['boxes'][:, 0].cpu().numpy().astype(np.float64),
+                    'y_top_left': pred['boxes'][:, 1].cpu().numpy().astype(np.float64),
+                    'width': (pred['boxes'][:, 2] - pred['boxes'][:, 0]).cpu() \
+                        .numpy().astype(np.float64),
+                    'height': (pred['boxes'][:, 3] - pred['boxes'][:, 1]).cpu() \
+                        .numpy().astype(np.float64),
+                    'class_index': pred['labels'].cpu().numpy().astype(np.int64),
+                    'confidence': pred['scores'].cpu().numpy().astype(np.float64),
                 }
                 det_df = pd.DataFrame(data=pred_data)
                 det_df['class_label'] = det_df['class_index']
