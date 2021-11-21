@@ -23,7 +23,7 @@ class WheatDataModule(LightningDataModule):
     def prepare_data(self):
         pass
 
-    def setup(self, stage: Optional[str] = None):  # pylint: disable=unused-argument
+    def setup(self, stage: Optional[str] = None):
         """Load annotation data, create train/val split, and create datasets."""
         data_dir = Path(self.config['data_dir'])
         image_dir = data_dir/'train'
@@ -51,7 +51,8 @@ class WheatDataModule(LightningDataModule):
         transform = transforms.Compose([
             transforms.ToTensor(),
         ])
-        self.train_dataset = WheatDataset(image_dir, train_ids, anno_dict, transform=transform)
+        if stage == 'fit':
+            self.train_dataset = WheatDataset(image_dir, train_ids, anno_dict, transform=transform)
         self.val_dataset = WheatDataset(image_dir, val_ids, anno_dict, transform=transform)
 
     def train_dataloader(self):
