@@ -17,17 +17,26 @@ Activate virtual environment
 source venv/bin/activate
 ```
 
-## Command-line script
+## Command-line scripts
 Run training as a script using the default configuration
 ```
 train  # using python entry point
 ```
-or equivalently
+or
 ```
 python wheat/scripts/train.py
 ```
 
 As documented in the [PyTorch Lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags), PyTorch Lightning CLI flags can be used to configure the training run. For example, to set the number of training epochs for to 10, add `--max_epochs=10` to the train command.
+
+Run evaluation on the validation set with weights from a saved checkpoint
+```
+evaluate <path-to-checkpoint> # using python entry point
+```
+or
+```
+python wheat/scripts/evaluate.py <path-to-checkpoint>
+```
 
 ## Jupyter notebook
 To install Jupyter notebook support, with the virtual environment active, run `pip install -e .[notebook]`, then start Jupyter. An example notebook that can be used to run training is provided at [notebooks/train.ipynb](notebooks/train.ipynb).
@@ -54,4 +63,3 @@ train --config-path my_config.ini
 * Add data augmentation
 * Add learning rate schedule
 * Replace config with PyTorch Lightning hyperparameters
-* Add evaluation script
