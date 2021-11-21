@@ -69,8 +69,8 @@ train --config-path my_config.ini
 ```
 
 # TODO
-* Get rid of non-writeable tensor warning
 * Add learning rate schedule
 * Replace config with PyTorch Lightning hyperparameters
 * Update Python packaging to include .ini files
+* Maybe replace numpy seed with PyTorch Lightning seed feature
 * Save 'best' checkpoint
