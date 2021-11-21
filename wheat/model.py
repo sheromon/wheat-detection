@@ -98,6 +98,10 @@ class WheatModel(pl.LightningModule):
                 det_df = pd.DataFrame(data=pred_data)
                 det_df['class_label'] = det_df['class_index']
                 det_df_list.append(det_df)
-        df_pr = brambox.stat.pr(pd.concat(det_df_list), pd.concat(anno_df_list))
-        ap = brambox.stat.ap(df_pr)
-        self.log('ap', ap, on_epoch=True)
+        for iou_threshold in [0.5, 0.75]:
+            df_pr = brambox.stat.pr(
+                pd.concat(det_df_list), pd.concat(anno_df_list),
+                threshold=iou_threshold)
+            ap = brambox.stat.ap(df_pr)
+            metric_name = 'ap' + str(round(100*iou_threshold))
+            self.log(metric_name, ap, on_epoch=True)
