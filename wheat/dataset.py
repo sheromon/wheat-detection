@@ -39,7 +39,6 @@ class WheatDataset(Dataset):
             ind = ind.tolist()
         image_id = self.image_ids[ind]
         image_path = self.image_dir/(image_id + '.jpg')
-        # torchvision models accept images as PIL images or numpy arrays
         image = np.asarray(Image.open(image_path))
 
         target_boxes = []

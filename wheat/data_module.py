@@ -25,8 +25,36 @@ class WheatDataModule(LightningDataModule):
     def prepare_data(self):
         pass
 
+    def get_transforms(self):
+        """Construct and return transforms for train and val/test/predict stages.
+
+        Training trainsforms are composed albumentations transforms with
+        probabilities controlled in the config. Val/test/predict transform is
+        just converting the images to torch tensors.
+
+        :return: tuple (train_transform, val_transform)
+        """
+        train_trans_config = self.config['train']['transforms']
+        bbox_params = A.BboxParams(
+            format='pascal_voc', min_visibility=0.5, label_fields=['labels'])
+        train_transform = A.Compose([
+            A.HorizontalFlip(p=train_trans_config['horizontal_flip_prob']),
+            A.VerticalFlip(p=train_trans_config['vertical_flip_prob']),
+            A.RandomRotate90(p=train_trans_config['random_rotate90_prob']),
+            A.ColorJitter(p=train_trans_config['color_jitter_prob']),
+            A.Blur(p=train_trans_config['blur_prob']),
+            albumentations.pytorch.ToTensorV2(),
+        ], bbox_params=bbox_params)
+        val_transform = A.Compose([
+            albumentations.pytorch.ToTensorV2(),
+        ], bbox_params=bbox_params)
+        return train_transform, val_transform
+
     def setup(self, stage: Optional[str] = None):
-        """Load annotation data, create train/val split, and create datasets."""
+        """Load annotation data, create train/val split, and create datasets.
+
+        :param stage: one of 'fit', 'validate', 'test', or 'predict'
+        """
         data_dir = Path(self.config['data_dir'])
         train_or_test = 'train' if stage in ('fit', 'validate') else 'test'
         image_dir = data_dir/train_or_test
@@ -35,18 +63,7 @@ class WheatDataModule(LightningDataModule):
         unique_image_ids = sorted([image_path.stem for image_path in image_dir.glob('*.jpg')])
         anno_dict = {image_id: [] for image_id in unique_image_ids}
 
-        bbox_params = A.BboxParams(
-            format='pascal_voc', min_visibility=0.5, label_fields=['labels'])
-        train_transform = A.Compose([
-            A.HorizontalFlip(p=self.config['train']['transforms']['horizontal_flip_prob']),
-            A.RandomBrightnessContrast(
-                p=self.config['train']['transforms']['brightness_contrast_prob']),
-            albumentations.pytorch.ToTensorV2(),
-        ], bbox_params=bbox_params)
-        val_transform = A.Compose([
-            albumentations.pytorch.ToTensorV2(),
-        ], bbox_params=bbox_params)
-
+        train_transform, val_transform = self.get_transforms()
         if stage in ['fit', 'validate']:
             train_csv = data_dir/'train.csv'
             df = pd.read_csv(train_csv)
