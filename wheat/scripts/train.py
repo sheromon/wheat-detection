@@ -13,6 +13,7 @@ def train(config, args_dict):
     model = WheatModel(config)
     trainer = pl.Trainer(**args_dict)
     trainer.fit(model, wheat_data_module)
+    trainer.validate(model, wheat_data_module)
 
 
 def main():

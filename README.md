@@ -73,3 +73,4 @@ train --config-path my_config.ini
 * Add learning rate schedule
 * Replace config with PyTorch Lightning hyperparameters
 * Update Python packaging to include .ini files
+* Save 'best' checkpoint
