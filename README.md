@@ -20,6 +20,10 @@ source venv/bin/activate
 ## Command-line script
 Run training as a script using the default configuration
 ```
+train  # using python entry point
+```
+or equivalently
+```
 python wheat/scripts/train.py
 ```
 
@@ -43,13 +47,11 @@ Indentation is not required but is included because I find it helps me see which
 
 Run training with a custom configuration
 ```
-python wheat/scripts/train.py --config-path my_config.ini
+train --config-path my_config.ini
 ```
 
 # TODO
-* Fix Python packaging (wheat module is not found)
 * Add data augmentation
 * Add learning rate schedule
 * Replace config with PyTorch Lightning hyperparameters
 * Add evaluation script
-* Get Python entrypoints working
