@@ -38,6 +38,15 @@ or
 python wheat/scripts/evaluate.py <path-to-checkpoint>
 ```
 
+Run inference on the test set and save predictions in the Kaggle submission format
+```
+predict <path-to-checkpoint> # using python entry point
+```
+or
+```
+python wheat/scripts/predict.py <path-to-checkpoint>
+```
+
 ## Jupyter notebook
 To install Jupyter notebook support, with the virtual environment active, run `pip install -e .[notebook]`, then start Jupyter. An example notebook that can be used to run training is provided at [notebooks/train.ipynb](notebooks/train.ipynb).
 
@@ -63,3 +72,4 @@ train --config-path my_config.ini
 * Add data augmentation
 * Add learning rate schedule
 * Replace config with PyTorch Lightning hyperparameters
+* Update Python packaging to include .ini files
