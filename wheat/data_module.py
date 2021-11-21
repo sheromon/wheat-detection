@@ -23,7 +23,7 @@ class WheatDataModule(LightningDataModule):
     def prepare_data(self):
         pass
 
-    def setup(self, stage: Optional[str] = None):
+    def setup(self, stage: Optional[str] = None):  # pylint: disable=unused-argument
         """Load annotation data, create train/val split, and create datasets."""
         data_dir = Path(self.config['data_dir'])
         image_dir = data_dir/'train'
