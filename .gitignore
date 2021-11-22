@@ -1,6 +1,7 @@
 # Custom files to ignore
 data/
 lightning_logs/
+submission.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
