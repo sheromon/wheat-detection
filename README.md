@@ -48,7 +48,11 @@ python wheat/scripts/predict.py <path-to-checkpoint>
 ```
 
 ## Jupyter notebook
-To install Jupyter notebook support, with the virtual environment active, run `pip install -e .[notebook]`, then start Jupyter. An example notebook that can be used to run training is provided at [notebooks/train.ipynb](notebooks/train.ipynb).
+To install Jupyter notebook support, with the virtual environment active, run `pip install -e .[notebook]`, then start Jupyter.
+
+### Provided notebooks
+  * Visualize dataset examples: [notebooks/visualize_dataset.ipynb](notebooks/visualize_dataset.ipynb)
+  * Run training: [notebooks/train.ipynb](notebooks/train.ipynb)
 
 ## Configuration
 
