@@ -20,6 +20,7 @@ class WheatModel(pl.LightningModule):
             'loss_objectness', 'loss_rpn_box_reg',
         )
         self.config = config
+        self.learning_rate = self.config['train']['optimizer']['initial_lr']
         # num_classes includes background, so wheat and background are two classes
         self.model = faster_rcnn.fasterrcnn_resnet50_fpn(num_classes=2)
 
@@ -32,9 +33,10 @@ class WheatModel(pl.LightningModule):
         return self.model(image, targets)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(
+        return torch.optim.SGD(
             self.parameters(),
-            lr=self.config['train']['optimizer']['initial_lr'],
+            lr=self.learning_rate,
+            momentum=0.5,
         )
 
     def training_step(self, batch, batch_idx):  # pylint: disable=unused-argument
