@@ -1,5 +1,6 @@
 """Evaluation script"""
 import argparse
+import copy
 
 import pytorch_lightning as pl
 
@@ -8,8 +9,13 @@ from wheat.data_module import WheatDataModule
 from wheat.model import WheatModel
 
 
-def evaluate(config, args_dict):
-    ckpt_path = args_dict.pop('ckpt_path')
+def evaluate(config, args_dict, ckpt_path):
+    """Run evaluation on the val set.
+
+    :param config: configobj mapping of config paramters to values
+    :param args_dict: dict of options for initializing PyTorch Lightning Trainer
+    :param ckpt_path: path to checkpoint to load for inference
+    """
     wheat_data_module = WheatDataModule(config)
     model = WheatModel(config)
     trainer = pl.Trainer(**args_dict)
@@ -28,7 +34,8 @@ def main():
 
     args_dict = vars(args)
     config = load_config(args_dict.pop('config_path'))
-    evaluate(config, args_dict)
+    ckpt_path = args_dict.pop('ckpt_path')
+    evaluate(config, args_dict, ckpt_path)
 
 
 if __name__ == '__main__':

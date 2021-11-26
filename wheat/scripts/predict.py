@@ -9,8 +9,13 @@ from wheat.dataset import WheatDataset
 from wheat.model import WheatModel
 
 
-def predict(config, args_dict):
-    ckpt_path = args_dict.pop('ckpt_path')
+def predict(config, args_dict: dict, ckpt_path: str):
+    """Run inference on the test set and save predictions.
+
+    :param config: configobj mapping of config paramters to values
+    :param args_dict: dict of options for initializing PyTorch Lightning Trainer
+    :param ckpt_path: path to checkpoint to load for inference
+    """
     wheat_data_module = WheatDataModule(config)
     model = WheatModel(config)
     trainer = pl.Trainer(**args_dict)
@@ -55,7 +60,8 @@ def main():
 
     args_dict = vars(args)
     config = load_config(args_dict.pop('config_path'))
-    predict(config, args_dict)
+    ckpt_path = args_dict.pop('ckpt_path')
+    predict(config, args_dict, ckpt_path)
 
 
 if __name__ == '__main__':
