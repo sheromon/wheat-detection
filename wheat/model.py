@@ -1,4 +1,7 @@
 """PyTorch Lightning Module with torchvision object detection model"""
+import os
+from pathlib import Path
+
 import brambox
 import numpy as np
 import pandas as pd
@@ -64,6 +67,36 @@ class WheatModel(pl.LightningModule):
 
     def validation_epoch_end(self, outputs):
         """Calculate average precision (AP) and log it."""
+        det_df, anno_df = self.compile_eval_dataframes(outputs)
+        # if these EVs are set, write the dataframes to disk
+        # this lets us do offline analysis later on
+        save_dir = os.environ.get('CMD_WHEAT_OUTPUT_DIR')
+        print('save_dir:', save_dir)
+        if save_dir:
+            det_save_path = Path(save_dir)/'det.csv'
+            anno_save_path = Path(save_dir)/'anno.csv'
+            det_df.to_csv(det_save_path)
+            anno_df.to_csv(anno_save_path)
+        # kaggle global wheat detection evaluation metric is AP calculated from
+        # 0.5 to 0.75 IOU in 0.05 increments. I don't want to calculate AP at
+        # every value, so just calculate it at 0.5 and 0.75.
+        for iou_threshold in [0.5, 0.75]:
+            df_pr = brambox.stat.pr(det_df, anno_df, threshold=iou_threshold)
+            ap = brambox.stat.ap(df_pr)
+            metric_name = 'ap' + str(round(100*iou_threshold))
+            self.log(metric_name, ap, on_epoch=True)
+
+    def compile_eval_dataframes(self, outputs):
+        """Reformat eval outputs into detection and annotation dataframes.
+
+        This output format is consistent with the required input format for the
+        brambox package.
+
+        :return: tuple of pandas dataframes (det_df, anno_df), where each dataframe
+            has columns that define the ground truth or predicted bounding box
+            'x_top_left', 'y_top_left', 'width', 'height'; an image ID 'image';
+            a class label 'class_label', and for detections, a score 'confidence'
+        """
         anno_df_list = []
         det_df_list = []
         for ibatch, val_outputs_batch in enumerate(outputs):
@@ -98,10 +131,4 @@ class WheatModel(pl.LightningModule):
                 det_df = pd.DataFrame(data=pred_data)
                 det_df['class_label'] = det_df['class_index']
                 det_df_list.append(det_df)
-        for iou_threshold in [0.5, 0.75]:
-            df_pr = brambox.stat.pr(
-                pd.concat(det_df_list), pd.concat(anno_df_list),
-                threshold=iou_threshold)
-            ap = brambox.stat.ap(df_pr)
-            metric_name = 'ap' + str(round(100*iou_threshold))
-            self.log(metric_name, ap, on_epoch=True)
+        return pd.concat(det_df_list), pd.concat(anno_df_list)
