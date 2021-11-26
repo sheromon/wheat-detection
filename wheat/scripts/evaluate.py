@@ -1,6 +1,5 @@
 """Evaluation script"""
 import argparse
-import copy
 
 import pytorch_lightning as pl
 
