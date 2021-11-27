@@ -53,6 +53,7 @@ To install Jupyter notebook support, with the virtual environment active, run `p
 ### Provided notebooks
   * Visualize dataset examples: [notebooks/visualize_dataset.ipynb](notebooks/visualize_dataset.ipynb)
   * Run training: [notebooks/train.ipynb](notebooks/train.ipynb)
+  * Run evaluation and analyze results: [notebooks/evaluate.ipynb](notebooks/evaluate.ipynb)
 
 ## Configuration
 
@@ -73,7 +74,8 @@ train --config-path my_config.ini
 ```
 
 # TODO
+* Save "best" checkpoint in addition to last checkpoint
+* Get rid of "numpy array is not writeable" error
 * Replace config with PyTorch Lightning hyperparameters
 * Update Python packaging to include .ini files
 * Maybe replace numpy seed with PyTorch Lightning seed feature
-* Save 'best' checkpoint
