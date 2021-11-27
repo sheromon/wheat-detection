@@ -38,12 +38,17 @@ class WheatModel(pl.LightningModule):
             lr=self.learning_rate,
             momentum=0.8,
         )
-        scheduler = torch.optim.lr_scheduler.CyclicLR(
+        lr_scheduler = torch.optim.lr_scheduler.CyclicLR(
             optimizer,
             base_lr=self.config['train']['optimizer']['initial_lr'],
             max_lr=self.config['train']['optimizer']['max_lr'],
         )
-        return {'optimizer': optimizer, 'scheuler': scheduler}
+        lr_scheduler_config = {
+            'scheduler': lr_scheduler,
+            'interval': 'step',
+            'frequency': 1,
+        }
+        return {'optimizer': optimizer, 'lr_scheduler': lr_scheduler_config}
 
     def training_step(self, batch, batch_idx):  # pylint: disable=unused-argument
         """Run the model in training mode.
@@ -53,7 +58,6 @@ class WheatModel(pl.LightningModule):
         # note from pytorch docs: Prior to PyTorch 1.1.0, the learning rate
         # scheduler was expected to be called before the optimizer’s update;
         # #1.1.0 changed this behavior in a BC-breaking way.
-        self.lr_schedulers().step()
         loss_dict = self(batch)
         total_loss = sum([loss_dict[key] for key in self._loss_names])
         loss_dict['total_loss'] = total_loss
