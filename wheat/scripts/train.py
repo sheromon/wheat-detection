@@ -11,7 +11,10 @@ from wheat.model import WheatModel
 def train(config, args_dict):
     wheat_data_module = WheatDataModule(config)
     model = WheatModel(config)
-    trainer = pl.Trainer(**args_dict)
+
+    lr_monitor = pl.callbacks.LearningRateMonitor(
+        logging_interval='epoch', log_momentum=True)
+    trainer = pl.Trainer(**args_dict, callbacks=[lr_monitor])
     trainer.fit(model, wheat_data_module)
     trainer.validate(model, wheat_data_module)
 
