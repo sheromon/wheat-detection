@@ -12,9 +12,9 @@ def train(config, args_dict):
     wheat_data_module = WheatDataModule(config)
     model = WheatModel(config)
 
-    lr_monitor = pl.callbacks.LearningRateMonitor(
-        logging_interval='epoch', log_momentum=True)
-    trainer = pl.Trainer(**args_dict, callbacks=[lr_monitor])
+    checkpointer = pl.callbacks.ModelCheckpoint(monitor='ap75', mode='max')
+    lr_monitor = pl.callbacks.LearningRateMonitor(logging_interval='epoch', log_momentum=True)
+    trainer = pl.Trainer(**args_dict, callbacks=[checkpointer, lr_monitor])
     trainer.fit(model, wheat_data_module)
     trainer.validate(model, wheat_data_module)
 

@@ -74,7 +74,6 @@ train --config-path my_config.ini
 ```
 
 # TODO
-* Save "best" checkpoint in addition to last checkpoint
 * Get rid of "numpy array is not writeable" error
 * Replace config with PyTorch Lightning hyperparameters
 * Update Python packaging to include .ini files
