@@ -1,11 +1,16 @@
 """Evaluation script"""
 import argparse
+from pathlib import Path
 
 import pytorch_lightning as pl
 
 from wheat.config import load_config
 from wheat.data_module import WheatDataModule
 from wheat.model import WheatModel
+
+# TODO: use ResourceManager API as recommended in
+# https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+BASE_DIR = Path(__file__).parent.parent
 
 
 def evaluate(config, args_dict, ckpt_path):
@@ -26,7 +31,7 @@ def main():
     parser.add_argument('ckpt_path', type=str,
                         help='Path to model checkpoint file')
     parser.add_argument('--config-path', type=str,
-                        default='wheat/config/config.ini',
+                        default=BASE_DIR/'config'/'config.ini',
                         help='Path to config file')
     parser = pl.Trainer.add_argparse_args(parser)
     args = parser.parse_args()
