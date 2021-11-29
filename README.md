@@ -76,5 +76,4 @@ train --config-path my_config.ini
 # TODO
 * Get rid of "numpy array is not writeable" error
 * Replace config with PyTorch Lightning hyperparameters
-* Update Python packaging to include .ini files
 * Maybe replace numpy seed with PyTorch Lightning seed feature

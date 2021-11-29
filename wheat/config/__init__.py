@@ -4,18 +4,25 @@ from pathlib import Path
 import configobj
 from validate import Validator
 
+# TODO: use ResourceManager API as recommended in
+# https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+CONFIG_DIR = Path(__file__).parent
 
-def load_config(config_path, configspec_path=None, do_validation=True):
+
+def load_config(config_path=None, configspec_path=None, do_validation=True):
     """Load config.
 
-    :param str config_path: path to configuration file with model-specific
-        parameters
+    :param str config_path: optional path to configuration file with
+        model-specific parameters; if not provided, load default config.ini
     :param str configspec_path: optional path to model configspec file
     :param bool do_validation: optional; if True (default), run validation
 
     :return: ConfigObj object, basically a dictionary of parameters
     """
-    config_path = Path(config_path)
+    if config_path is None:
+        config_path = CONFIG_DIR/'config.ini'
+    else:
+        config_path = Path(config_path)
     if not config_path.is_file():
         raise FileNotFoundError(f"No file '{config_path}'.")
     # Assumes that the configspec.ini for the given config file is in the same directory

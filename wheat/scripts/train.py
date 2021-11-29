@@ -21,8 +21,7 @@ def train(config, args_dict):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config-path', type=str,
-                        default='wheat/config/config.ini',
+    parser.add_argument('--config-path', type=str, default=None,
                         help='Path to config file')
     parser = pl.Trainer.add_argparse_args(parser)
     args = parser.parse_args()
