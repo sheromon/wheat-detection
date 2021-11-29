@@ -2,6 +2,8 @@
 
 The cmd-wheat-detection Python package includes code to train and evaluate a basic model for the [Kaggle Global Wheat Detection](https://www.kaggle.com/c/global-wheat-detection/overview) problem. This deep learning model uses [pytorch](https://pytorch.org/) with [pytorch lightning](https://www.pytorchlightning.ai/) to run [torchvision](https://pytorch.org/vision/stable/index.html) object detection models.
 
+You can see how I use this code in a Kaggle notebook [here](https://www.kaggle.com/sheromon/wheat-faster-r-cnn-with-pytorch-lightning/notebook).
+
 # Usage
 
 Set up virtual environment
@@ -74,6 +76,12 @@ train --config-path my_config.ini
 ```
 
 # TODO
+
+Honestly, I'm not sure when I'll have time to do any of these, but it's nice to have goals, right?
+
 * Get rid of "numpy array is not writeable" error
 * Replace config with PyTorch Lightning hyperparameters
 * Maybe replace numpy seed with PyTorch Lightning seed feature
+* Add stochastic weight averaging
+* Add tests?
+* Add test-time augmentation?
