@@ -1,6 +1,7 @@
-# Unreleased
+# 0.2.0
 
 * Updated Python packaging to include configspec.ini and config.ini as data files in the package and updated code to use installed .ini files
+* Fixed bug in format of submission.csv (was missing header row)
 
 # 0.1.0
 
