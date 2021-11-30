@@ -33,7 +33,9 @@ def save_submission(results, test_dataset: WheatDataset, score_threshold: float,
     :param score_threshold: predictions with scores below this value will be discarded
     """
     image_ids = test_dataset.image_ids
+    header = 'image_id,PredictionString\n'
     with open(save_path, 'w', encoding='utf-8') as file_obj:
+        file_obj.write(header)
         for image_id, predictions in zip(image_ids, results):
             keep_inds = predictions[0]['scores'] > score_threshold
             keep_scores = (predictions[0]['scores'][keep_inds]).cpu().numpy()
